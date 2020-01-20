@@ -3,6 +3,13 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 import datetime
 
+student_choices=[
+        ('un','username'),
+        ('id','id'),
+        ('fn','first name'),
+        ('n','full name')
+        ]
+
 class RenewBookForm(forms.Form):
     renewal_date=forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
     
@@ -18,5 +25,6 @@ class RenewBookForm(forms.Form):
         return data
     
 class SearchStudent(forms.Form):
-    name=forms.CharField(help_text="Enter student's name here to search for")
+    choice=forms.CharField(label='search student by ',widget=forms.Select(choices=student_choices))
+    name=forms.CharField(label='')
     

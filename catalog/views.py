@@ -12,6 +12,7 @@ from catalog.forms import RenewBookForm,SearchStudent
 
 def index(request):
     """View function for home page of site."""
+    form=SearchStudent()
 
     # Generate counts of some of the main objects
     num_books = Book.objects.all().count()
@@ -36,6 +37,7 @@ def index(request):
         'num_authors': num_authors,
         'num_genre':num_genre,
         'num_visits': num_visits,
+        'form':form,
     }
 
     # Render the HTML template index.html with the data in the context variable
@@ -74,13 +76,13 @@ def renew_book_librarian(request, pk):
     return render(request, 'catalog/book_renew_librarian.html', context)
 
 def search_student(request):
-    if request.method == 'GET':
-        form=SearchStudent(request.GET)
+    form=SearchStudent(request.GET)
+    if(request.GET.get('choice')=='un'):
         book_instance = BookInstance.objects.filter(borrower__username__icontains=request.GET.get('name')).order_by('due_back')
         return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
     else:
-        return render(request, 'catalog/search_student.html', {'form':SearchStudent()})
-
+        print('kuch nhi hua ;_;')
+        return HttpResponseRedirect('/' )
 from django.views import generic
 
     
