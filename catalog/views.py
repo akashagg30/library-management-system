@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 from catalog.models import Book, Author, BookInstance, Genre
-from catalog.forms import RenewBookForm
+from catalog.forms import RenewBookForm,SearchStudent
 
 def index(request):
     """View function for home page of site."""
@@ -68,15 +68,23 @@ def renew_book_librarian(request, pk):
 
     context = {
         'form': form,
-        'book_instance': book_instance,
+        'bookinstance_list': book_instance,
     }
 
     return render(request, 'catalog/book_renew_librarian.html', context)
 
-
+def search_student(request):
+    if request.method == 'GET':
+        form=SearchStudent(request.GET)
+        book_instance = BookInstance.objects.filter(borrower__username__icontains=request.GET.get('name')).order_by('due_back')
+        return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
+    else:
+        return render(request, 'catalog/search_student.html', {'form':SearchStudent()})
 
 from django.views import generic
 
+    
+    
 class BookListView(generic.ListView):
     model = Book
     paginate_by = 10
