@@ -7,11 +7,16 @@
 {% block content %}
     <form action="{% url 'search-student' %}" method="get">
         {% csrf_token %}
-        {{form}}
+        {{form_student}}
+        <input type="submit" value="OK">
+    </form>
+    <form action="{% url 'search-book' %}" method="get">
+        {% csrf_token %}
+        {{form_book}}
         <input type="submit" value="OK">
     </form>
   <h1>Local Library Home</h1>
-  <p>Welcome to LocalLibrary, a website developed by <em>Mozilla Developer Network</em>!</p>
+  <p>Welcome to LocalLibrary, a website developed by <em>Runtime Terror</em>!</p>
   <h2>Dynamic content</h2>
   <p>The library has the following record counts:</p>
   <ul>

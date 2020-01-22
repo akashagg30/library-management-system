@@ -17,5 +17,6 @@ urlpatterns += [
 ]
 
 urlpatterns += [   
-    path('search/', views.search_student, name='search-student'),
+    path('search_student/', views.search_student, name='search-student'),
+    path('search_book/', views.search_book, name='search-book'),
 ]

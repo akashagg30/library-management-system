@@ -5,9 +5,16 @@ import datetime
 
 student_choices=[
         ('un','username'),
-        ('id','id'),
+        #('id','id'),
         ('fn','first name'),
-        ('n','full name')
+        #('n','full name')
+        ]
+
+book_choices=[
+        ('book name','book name'),
+        ('author','author name'),
+        #('genre','genre'),
+        #('book instance id','book instance id')
         ]
 
 class RenewBookForm(forms.Form):
@@ -26,5 +33,9 @@ class RenewBookForm(forms.Form):
     
 class SearchStudent(forms.Form):
     choice=forms.CharField(label='search student by ',widget=forms.Select(choices=student_choices))
+    name=forms.CharField(label='')
+    
+class SearchBook(forms.Form):
+    choice=forms.CharField(label='search book by ',widget=forms.Select(choices=book_choices))
     name=forms.CharField(label='')
     

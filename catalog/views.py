@@ -5,14 +5,16 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 # Create your views here.
 from catalog.models import Book, Author, BookInstance, Genre
-from catalog.forms import RenewBookForm,SearchStudent
+from catalog.forms import RenewBookForm,SearchStudent,SearchBook
 
 def index(request):
     """View function for home page of site."""
-    form=SearchStudent()
+    form_student=SearchStudent()
+    form_book=SearchBook()
 
     # Generate counts of some of the main objects
     num_books = Book.objects.all().count()
@@ -37,7 +39,8 @@ def index(request):
         'num_authors': num_authors,
         'num_genre':num_genre,
         'num_visits': num_visits,
-        'form':form,
+        'form_student':form_student,
+        'form_book':form_book,
     }
 
     # Render the HTML template index.html with the data in the context variable
@@ -80,9 +83,38 @@ def search_student(request):
     if(request.GET.get('choice')=='un'):
         book_instance = BookInstance.objects.filter(borrower__username__icontains=request.GET.get('name')).order_by('due_back')
         return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
+    elif request.GET.get('choice')=='id':
+        book_instance = BookInstance.objects.filter(borrower__username__icontains=request.GET.get('name')).order_by('due_back')
+        return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
+    elif request.GET.get('choice')=='fn':
+        book_instance = BookInstance.objects.filter(borrower__first_name__icontains=request.GET.get('name')).order_by('due_back')
+        return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
+    elif request.GET.get('choice')=='n':
+        book_instance = BookInstance.objects.filter(borrower__username__icontains=request.GET.get('name')).order_by('due_back')
+        return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
     else:
         print('kuch nhi hua ;_;')
         return HttpResponseRedirect('/' )
+    
+def search_book(request):
+    data=request.GET.get('name')
+    if(request.GET.get('choice')=='book name'):
+        link=reverse('book-detail', args=[str(Book.objects.get(title__icontains=data).id)])
+        return HttpResponseRedirect(link)
+    elif request.GET.get('choice')=='author':
+        link=reverse('book-detail', args=[str(Book.objects.get(author__first_name__icontains=data).id)])
+        return HttpResponseRedirect(link)
+    #still to work on genre and book instance id
+    elif request.GET.get('choice')=='genre':
+        book_instance = BookInstance.objects.filter(borrower__first_name__icontains=data).order_by('due_back')
+        return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
+    elif request.GET.get('choice')=='book instance id':
+        book_instance = BookInstance.objects.filter(borrower__username__icontains=data).order_by('due_back')
+        return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
+    else:
+        print('kuch nhi hua ;_;')
+    return HttpResponseRedirect('/' )
+    
 from django.views import generic
 
     
