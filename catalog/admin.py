@@ -42,7 +42,15 @@ class BookInstanceAdmin(admin.ModelAdmin):
         }),
     )
 
-
+'''
+class GenreInline(admin.StackedInline):
+    model=Genre
+    
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    inlines=[GenreInline]
+'''
+    
 admin.site.register(Author,AuthorAdmin)
 admin.site.register(Genre)
 admin.site.unregister(User)

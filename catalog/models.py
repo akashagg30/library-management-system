@@ -15,10 +15,14 @@ class Student(models.Model):
 class Genre(models.Model):
     """Model representing a book genre."""
     name = models.CharField(max_length=200, help_text='Enter a book genre (e.g. Science Fiction)')
+    master=models.ForeignKey('self', null=True, blank=True, related_name='genre',on_delete=models.SET_NULL)
     
     def __str__(self):
         """String for representing the Model object."""
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('genre-extend', args=[str(self.name)])
     
     
     

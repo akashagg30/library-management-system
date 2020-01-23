@@ -5,7 +5,6 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
 
 # Create your views here.
 from catalog.models import Book, Author, BookInstance, Genre
@@ -79,7 +78,6 @@ def renew_book_librarian(request, pk):
     return render(request, 'catalog/book_renew_librarian.html', context)
 
 def search_student(request):
-    form=SearchStudent(request.GET)
     if(request.GET.get('choice')=='un'):
         book_instance = BookInstance.objects.filter(borrower__username__icontains=request.GET.get('name')).order_by('due_back')
         return render(request,'catalog/bookinstance_list_borrowed_user.html',{'bookinstance_list':book_instance})
@@ -114,9 +112,33 @@ def search_book(request):
     else:
         print('kuch nhi hua ;_;')
     return HttpResponseRedirect('/' )
+
+def genre_extended(request,name):
+    if '%' in name:
+        temp=''
+        f=0
+        for i in name:
+            if i=='%':
+                temp+=' '
+                f=1
+            elif f==0:
+                temp+=i
+            elif f==3:
+                temp+=i
+                f=0
+            else:
+                f+=1
+        name=temp
+    genre=Genre.objects.filter(master__name__icontains=name)
+    c=0
+    for _ in genre:
+        c+=1
+    if c!=0:
+        return render(request,'catalog/genre_list.html',{'genre_list':genre})
+    else:
+        return HttpResponseRedirect('/' )
     
 from django.views import generic
-
     
     
 class BookListView(generic.ListView):
@@ -156,4 +178,11 @@ class AuthorDetailView(generic.DetailView):
 
 class GenreListView(generic.ListView):
     model=Genre
-    paginate_by=10    
+    paginate_by=10  
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(GenreListView, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        context['genre_list'] = Genre.objects.filter(master__isnull=True)
+        return context
