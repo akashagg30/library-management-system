@@ -153,3 +153,7 @@ class AuthorListView(generic.ListView):
     
 class AuthorDetailView(generic.DetailView):
     model=Author
+
+class GenreListView(generic.ListView):
+    model=Genre
+    paginate_by=10    

@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Genre List</h1>
+  {% if genre_list %}
+  <ul>
+    {% for book in genre_list %}
+      <li>
+        <a href=" ">{{book.name}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no genre in the library.</p>
+  {% endif %}       
+{% endblock %}
