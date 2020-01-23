@@ -1,12 +1,22 @@
 from django.contrib import admin
 
-# Register your models here.
-from .models import Author, Genre, Book, BookInstance
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .models import Author, Genre, Book, BookInstance, Student
+
+class StudentInline(admin.StackedInline):
+    model = Student
+    can_delete = False
+    verbose_name_plural = 'student'
+
+# Define a new User admin
+class UserAdmin(BaseUserAdmin):
+    inlines = (StudentInline,)
 
 class BookAdminInline(admin.TabularInline):
     model=Book
 
-class AutorAdmin(admin.ModelAdmin):
+class AuthorAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'date_of_birth', 'date_of_death')
     fields = ['first_name', 'last_name', ('date_of_birth', 'date_of_death')]
     inlines=[BookAdminInline]
@@ -33,8 +43,7 @@ class BookInstanceAdmin(admin.ModelAdmin):
     )
 
 
-#admin.site.register(Book)
-#admin.site.register(Author)
-admin.site.register(Author,AutorAdmin)
+admin.site.register(Author,AuthorAdmin)
 admin.site.register(Genre)
-#admin.site.register(BookInstance)
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

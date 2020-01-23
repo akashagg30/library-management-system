@@ -6,6 +6,11 @@ from datetime import date
 
 
 # Create your models here.
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    roll_no=models.IntegerField()
+    
+    
 
 class Genre(models.Model):
     """Model representing a book genre."""
