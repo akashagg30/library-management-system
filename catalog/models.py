@@ -19,7 +19,13 @@ class Genre(models.Model):
     
     def __str__(self):
         """String for representing the Model object."""
-        return self.name
+        a=self.master
+        if a==None:
+            a=''
+        else:
+            a=str(a)
+            a+=','
+        return f'{a} {self.name}'
     
     def get_absolute_url(self):
         return reverse('genre-extend', args=[str(self.name)])
