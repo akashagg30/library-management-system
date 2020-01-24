@@ -1,55 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% block title %}<title>Local Library</title>{% endblock %}
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <!-- Add additional CSS in static file -->
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	{% block title %}<title>Local Library</title>{% endblock %}
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrap Example</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<style>
+		body {
+			margin: 0;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		#body1 {
+			width: 100%;
+			height: 100%;
+		}
+		.topnav {
+
+			background-color: #000;
+		}
+
+		.topnav a {
+			float: left;
+			color: #f2f2f2;
+			text-align: center;
+			padding: 25px 10px 30px;
+			text-decoration: none;
+			font-size: 30px;
+		}
+
+		.topnav a:hover {
+			background-color: #ddd;
+			color: black;
+		}
+
+		.topnav a.active {
+			background-color: #4CAF50;
+			color: white;
+		}
+
+		.topnav-right {
+			float: right;
+		}
+	</style>
+	<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
+	<!-- Add additional CSS in static file -->
+	{% block css %}{% endblock %}
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-2">
-      {% block sidebar %}
-        <ul class="sidebar-nav">
-          <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="{% url 'books' %}">All books</a></li>
-          <li><a href="{% url 'author' %}">All authors</a></li>
-          <li><a href="{% url 'genre' %}">All genres</a></li>
-          {% if user.is_authenticated %}
-            <li>User: {{ user.get_username }}</li>
-            <li><a href="{% url 'my-borrowed' %}">My Borrowed</a></li>
-            <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   
-          {% else %}
-            <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-          {% endif %} 
-        </ul>
-     {% endblock %}
+	<div class="container-fluid">
+		<div class="row">
+			<!-- <div class="col-sm-2"> -->
+			{% block sidebar %}
+			</ul>
+			<div id="body1">
+				<nav class="navbar navbar-inverse">
+					<div class="container-fluid">
+						<div class="topnav">
+							<a href="{% url 'index' %}">Library Management System</a>
+
+							<div class="topnav-right">
+								<ul class="nav navbar-nav">
+									<li><a href="{% url 'books' %}"><button class="btn btn-success btn-lg navbar-btn">All Books</button></a></li>
+									<li><a href="{% url 'genre' %}"><button class="btn btn-success btn-lg navbar-btn">All Genre</button></a></li>
+									<li><a href="{% url 'author' %}"><button class="btn btn-success btn-lg navbar-btn">All Author</button></a></li>
+									{% if user.is_authenticated %}
+									<li>
+										<div class="btn-group" style="margin: 22px;">
+											<button type="button" class="btn btn-success btn-lg">My Borrowed</button>
+											<button type="button" class="btn btn-success btn-lg dropdown-toggle" data-toggle="dropdown">
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu">
+												<li><a href="{% url 'my-borrowed' %}">My Borrowed</a></li>
+												<li><a href="#">option b</a></li>
+												<li><a href="#">option c</a></li>
+												<li><a href="#">option d</a></li>
+											</ul>
+										</div> 
+									</li>
+									{% endif %}
+									{% if user.is_authenticated %}
+									<li><a href="{% url 'logout'%}?next={{request.path}}"><button class="btn btn-primary btn-lg navbar-btn">Logout</button></a></li>
+									{% else %}
+									<li><a href="{% url 'login'%}?next={{request.path}}"><button class="btn btn-primary btn-lg navbar-btn">Login</button></a></li>
+									{% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>
+			{% endblock %}
+			<!-- </div> -->
+      <!--<div class='dp'>
+      		<img src="{{ user.avatar }}" alt="temp">
+      	</div>-->
+      	<div class="col-sm-10 ">
+      		{% block content %}{% endblock %}
+      	</div>
+      	{% block pagination %}
+      	{% if is_paginated %}
+      	<div class="pagination">
+      		<span class="page-links">
+      			{% if page_obj.has_previous %}
+      			<a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+      			{% endif %}
+      			<span class="page-current">
+      				Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      			</span>
+      			{% if page_obj.has_next %}
+      			<a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+      			{% endif %}
+      		</span>
+      	</div>
+      	{% endif %}
+      	{% endblock %} 
       </div>
-      <div class="col-sm-10 ">
-          {% block content %}{% endblock %}
-      </div>
-          {% block pagination %}
-            {% if is_paginated %}
-                <div class="pagination">
-                    <span class="page-links">
-                        {% if page_obj.has_previous %}
-                            <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
-                        {% endif %}
-                        <span class="page-current">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                        </span>
-                        {% if page_obj.has_next %}
-                            <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-                        {% endif %}
-                    </span>
-                </div>
-            {% endif %}
-          {% endblock %} 
-    </div>
   </div>
 </body>
 </html>

@@ -4,11 +4,14 @@ import uuid # Required for unique book instances
 from django.contrib.auth.models import User
 from datetime import date
 
+def user_avatar_path(instance, filename):
+    return 'user_{0}/avatar/{1}'.format(instance.id, filename)
 
 # Create your models here.
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     roll_no=models.IntegerField()
+    avatar = models.ImageField(upload_to=user_avatar_path)
     
     
 

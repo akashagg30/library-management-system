@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+#source /media/ghost38o/data/work/projects/django/virenv/bin/activate
+
 # Create your views here.
 from catalog.models import Book, Author, BookInstance, Genre
 from catalog.forms import RenewBookForm,SearchStudent,SearchBook
