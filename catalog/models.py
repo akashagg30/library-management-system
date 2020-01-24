@@ -3,6 +3,8 @@ from django.urls import reverse # Used to generate URLs by reversing the URL pat
 import uuid # Required for unique book instances
 from django.contrib.auth.models import User
 from datetime import date
+from django.core.exceptions import ValidationError
+
 
 def user_avatar_path(instance, filename):
     return 'user_{0}/avatar/{1}'.format(instance.id, filename)
@@ -56,6 +58,7 @@ class Book(models.Model):
     
     display_genre.short_description = 'Genre'
     
+    
     def __str__(self):
         """String for representing the Model object."""
         return self.title
@@ -92,6 +95,17 @@ class BookInstance(models.Model):
     class Meta:
         ordering = ['due_back']
         
+    def clean(self):
+        if self.status == 'o' and self.due_back is None:
+            raise ValidationError('book on loan must have due-back date!!!')
+        elif self.status != 'o' and self.due_back is not None:
+            raise ValidationError('only book on loan can have due-back date!!!')
+        if self.status == 'o' and self.borrower is None:
+            raise ValidationError('book on loan must have a borrower!!!')
+        elif self.status != 'o' and self.borrower is not None:
+            raise ValidationError('only book on loan can have a borrower!!!')
+
+
     @property
     def is_overdue(self):
         if self.due_back and date.today() > self.due_back:
